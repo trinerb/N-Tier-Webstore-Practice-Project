@@ -1,7 +1,12 @@
+using Microsoft.EntityFrameworkCore;
+using WebStoreApp.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<ApplicationDbContext>(options=>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))); //get the connectionstring and pass it into UseSqlServer. Name "DefaultConnection" important, must match from appsettings.json
 
 var app = builder.Build();
 
@@ -14,7 +19,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
+app.UseStaticFiles(); //wwwrootfiles
 
 app.UseRouting();
 
@@ -22,6 +27,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}"); //if nothing is defined, go here
 
 app.Run();

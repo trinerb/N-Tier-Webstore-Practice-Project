@@ -8,14 +8,14 @@ namespace WebStoreApp.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger)  //constructor for our class
         {
             _logger = logger;
         }
 
         public IActionResult Index()
         {
-            return View();
+            return View(); //default view return. can override ex. "Privacy"
         }
 
         public IActionResult Privacy()
