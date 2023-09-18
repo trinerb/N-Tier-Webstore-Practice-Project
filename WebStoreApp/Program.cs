@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using WebStoreApp.Data;
+using WebStore.DataAccess.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +19,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles(); //wwwrootfiles
+app.UseStaticFiles(); //wwwroot-files
 
 app.UseRouting();
 
@@ -27,6 +27,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}"); //if nothing is defined, go here
+    pattern: "{controller=Home}/{action=Index}/{id?}"); //"if nothing is defined, go here"
 
 app.Run();

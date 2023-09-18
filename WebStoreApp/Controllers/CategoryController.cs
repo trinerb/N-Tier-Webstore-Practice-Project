@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebStoreApp.Data;
-using WebStoreApp.Models;
+using WebStore.Models;
+using WebStore.DataAccess.Data;
 
 namespace WebStoreApp.Controllers
 {
@@ -11,6 +11,7 @@ namespace WebStoreApp.Controllers
         {
             _db = db;
         }
+        //[HttpGet] Default
         public IActionResult Index()
         {
             List<Category> objCategoryList = _db.Categories.ToList(); //we use List<Category> as datatype instead of var to be explicit. else its var objCategoryList. 
@@ -38,6 +39,7 @@ namespace WebStoreApp.Controllers
             {
                 _db.Categories.Add(obj); //telling to add this category object to the category table in db
                 _db.SaveChanges(); //actually create the table
+                TempData["success"] = "Category successfully created "; //can now display message on desired view. In this case, Index. 
                 return RedirectToAction("Index");
             }
             return View();
@@ -52,33 +54,68 @@ namespace WebStoreApp.Controllers
                 return NotFound();
             }
             //different ways of retrieving given category
-            Category? categoryFromDb = _db.Categories.Find(id); //will automatically find the id and assign that to categoryFromDb. Only works for primary key.
-            //Category? categoryFromDb1 = _db.Categories.FirstOrDefault(u => u.Id == id); //will try to find out whether any record. if not write null object and assign. Does not need to be primary key. can use for name or name.contains.
+            Category? categoryFromDb = _db.Categories.Find(id); //Must have ID. will automatically find the id and assign that to categoryFromDb. Only works for primary key.
+            //Category? categoryFromDb1 = _db.Categories.FirstOrDefault(u => u.Id == id); //Doesn't necessarily need ID. will try to find out whether any record. if not write null object and assign. Does not need to be primary key. can use for name or name.contains.
             //Category? categoryFromDb2 = _db.Categories.Where(u=>u.Id==id).FirstOrDefault(); 
 
             if (categoryFromDb == null)
             {
                 return NotFound();
             }
-            return View(categoryFromDb);  //return category to view and display it
+            return View(categoryFromDb);  //return category to view and display it(in the text fields)
         }
 
         [HttpPost]
         public IActionResult Edit(Category obj)
         {
-            if (obj.Name == obj.DisplayOrder.ToString())
-            {
-                ModelState.AddModelError("Name", "The Display Order cannot exactly match the name.");
-            }
+            
 
             if (ModelState.IsValid) 
             {
-                _db.Categories.Add(obj); 
-                _db.SaveChanges(); 
+                _db.Categories.Update(obj); //will update based on id (built-in). entity framework use .Update
+                _db.SaveChanges();
+                TempData["success"] = "Category successfully updated";
                 return RedirectToAction("Index");
             }
             return View();
         
+        }
+
+        public IActionResult Delete(int? id)  // ? means nullable
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            
+            Category? categoryFromDb = _db.Categories.Find(id); 
+
+            if (categoryFromDb == null)
+            {
+                return NotFound();
+            }
+            return View(categoryFromDb);  //return category to view and display it(in the text fields)
+        }
+
+        [HttpPost, ActionName("Delete")]//we have to rename to DeletePOST to not be duplicate function. But can set actionName to have same endpoint/Delete
+        public IActionResult DeletePOST(int? id) //can get entire category obj(Category obj) or just the id the user wants to delete
+        {  
+
+
+            if (ModelState.IsValid)
+            {
+                Category obj = _db.Categories.Find(id); //find the selected category in database
+                if (obj == null)
+                {
+                    return NotFound();
+                }
+                _db.Categories.Remove(obj); //remove object retrieved from the database
+                _db.SaveChanges();
+                TempData["success"] = "Category successfully deleted ";
+                return RedirectToAction("Index");
+            }
+            return View();
+
         }
 
     }
