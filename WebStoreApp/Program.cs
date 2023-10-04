@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WebStore.DataAccess.Data;
+using WebStore.DataAccess.Repository;
+using WebStore.DataAccess.Repository.IRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options=>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))); //get the connectionstring and pass it into UseSqlServer. Name "DefaultConnection" important, must match from appsettings.json
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>(); //for repository-pattern
 
 var app = builder.Build();
 
@@ -27,6 +30,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}"); //"if nothing is defined, go here"
+    pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}"); //"if nothing is defined, go here"
 
 app.Run();

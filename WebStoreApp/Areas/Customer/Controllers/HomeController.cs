@@ -3,8 +3,9 @@ using System.Diagnostics;
 using WebStore.Models;
 
 
-namespace WebStoreApp.Controllers
+namespace WebStoreApp.Areas.Customer.Controllers
 {
+    [Area("Customer")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

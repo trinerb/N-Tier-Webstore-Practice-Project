@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace WebStore.DataAccess.Repository.IRepository
 {
-    public interface IRepository<T> where T : class //Generic type, T. Must be public!
+    public interface IRepository<T> where T : class //Generic type, T. (Must be public)
     {
         //T - Category or any other generic model upon we want to perform crud op. 
-        IEnumerable<T> GetAll(); //The first thing we need is to display all categories
+        IEnumerable<T> GetAll(); //Display all categories
         //On ex. edit we need to retrieve the details of one category. so we need:
         T Get(Expression<Func<T, bool>> filter); //Fetching only one. General syntax for "first or default". (u => u.Id == id)
         void Add(T entity);
